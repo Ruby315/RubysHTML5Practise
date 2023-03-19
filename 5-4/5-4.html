@@ -1,0 +1,34 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>html5音乐播放器</title>
+    <link rel="stylesheet" href="css/main.css">
+	<script src="player.js" ></script>
+</head>
+
+<body>
+<div class="musicBox" id="musicBox">
+	<audio src="music/爱要坦荡荡.mp3" id="mysong">
+		当前浏览器不支持audio
+	</audio>
+    <div class="leftControl"></div>
+    <div id="mainControl" class="mainControl"></div>
+    <div id="stopControl" class="stopControl" style="display:none"></div>
+    <div class="rightControl"></div>
+    <div class="processControl" >
+        <div id="songName" class="songName">爱要坦荡荡</div>
+        <div id="songTime" class="songTime">00:00&nbsp;|&nbsp;00:00</div>
+        <div id="process" style="width:500px" class="process"></div>
+        <div id="processYet" class="processYet"></div>
+    </div>
+    <div class="voiceEmp"></div>
+    <div id="voidProcess" class="voidProcess" style="width:66px"></div>
+    <div class="voidProcessYet"  id="voidProcessYet"></div>
+    <div class="voiceFull"></div>
+</div>
+</body>
+
+</html>

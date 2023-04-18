@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title></title>
+	</head>
+	<body>
+		<canvas id="myCanvas2" width="1500px" height="680px" style="border: 1px solid black;"></canvas>
+	</body>
+	<script type="text/javascript">
+		let cav = document.querySelector("#myCanvas2")
+		let ca = cav.getContext("2d")
+		
+		// 按下时
+		cav.onmousedown = function(){
+			// 获取鼠标位置
+			var x = event.clientX - cav.offsetLeft;
+			var y = event.clientY - cav.offsetTop;
+			//利用鼠标点击位置作为起始点
+			ca.moveTo(x,y);
+			// 鼠标移动路径获取
+			cav.onmousemove= function(){
+				// 获取鼠标移动路径
+				var x2 = event.clientX - cav.offsetLeft;
+				var y2 = event.clientY - cav.offsetTop;
+				// 鼠标移动路径为最终位置
+				ca.lineTo(x2,y2);
+				ca.stroke()
+			}
+		}
+			
+		cav.onmouseup = function(){
+			cav.onmousemove = null;
+		}
+		
+	</script>
+</html>

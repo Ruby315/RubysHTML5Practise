@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<!-- 创建画布 -->
+		<!-- 调整宽搞画布 -->
+		<canvas id="myCanvas" width="600px" height="400px" style="border: 1px solid black;"></canvas>
+	</body>
+	<script type="text/javascript">
+		// 创建画笔
+		let cav = document.querySelector("#myCanvas");// 获取画布
+		let cxt = cav.getContext("2d");
+				
+				// 画扇形
+				
+				cxt.moveTo(200,200)//从圆心开始封闭
+				cxt.arc(200,200,60,Math.PI/180*0,Math.PI/180*120,false)//逆时针
+				cxt.closePath()
+				cxt.fillStyle = "darkblue"
+				cxt.fill();
+				
+				cxt.beginPath()
+				cxt.moveTo(200,200)//从圆心开始封闭
+				cxt.arc(200,200,60,Math.PI/180*120,Math.PI/180*240,false)//逆时针
+				cxt.closePath()
+				cxt.fillStyle = "seagreen"
+				cxt.fill();
+				
+				cxt.beginPath()
+				cxt.moveTo(200,200)//从圆心开始封闭
+				cxt.arc(200,200,60,Math.PI/180*240,Math.PI/180*360,false)//逆时针
+				cxt.closePath()
+				cxt.fillStyle = "firebrick"
+				cxt.stroke()
+				cxt.fill();
+				
+				
+				
+				
+			</script>
+		</html>
+		

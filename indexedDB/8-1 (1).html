@@ -1,0 +1,211 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<h1>indexed Database</h1>
+		<input type="button" value="创建数据库" onclick="creatDb()">
+		<input type="button" value="关闭数据库" id="closebnt">
+		<input type="button" value="创建表" onclick="creatTable()">
+		<hr>
+		<fieldset>
+		    <legend>用户信息</legend>
+		    <table>
+		        <tr>
+					<input type="hidden" id="id"/>
+					<tr><td>学号：<input type="text" id="code"></td></tr>
+		            <tr><td>姓名：<input type="text" id="name"></td></tr>
+					<tr><td>班级：<input type="text" id="calsss"/></td></tr>
+					<tr><td>课程：<input type="text" id="coure"></td></tr>
+					<tr><td>生日：<input type="text" id="brth"/></td></tr>
+					<tr><td>成绩：<input type="text" id="score"/></td></tr>
+		        </tr>
+		        <tr>
+		            <td><input type="button" onclick="save()" value="保存"></td>           
+		        </tr>
+		    </table>
+		</fieldset>
+		<hr>
+		<input type="button" value="查询表" onclick="seach()">
+		<table border="1" id="mytable">
+		    <tr>
+		        <td width='200'>学号</td>
+		        <td width='100'>姓名</td>
+				<td width='100'>班级</td>
+				<td width='100'>课程</td>
+				<td width='100'>生日</td>
+				<td width='100'>成绩</td>
+		        <td width='200'>操作</td>
+		    </tr>      
+		</table>  
+		<hr>
+		<input type="button" value="删除表" onclick="dropTable()">
+	</body>
+	<script type="text/javascript">
+	let dbReq;
+	let id = document.querySelector("#id")
+	let code = document.querySelector("#code");
+	let name = document.querySelector("#name");
+	let	calsss = document.querySelector("#calsss");
+	let	coure = document.querySelector("#coure");
+	let	brth = document.querySelector("#brth");
+	let	score = document.querySelector("#score");
+	let	mytable = document.querySelector("#mytable");
+	// 创建数据库
+		function creatDb(){
+			// 创建数据库
+			dbReq = indexedDB.open("user",1);//（数据库名称，版本号），版本号为整数
+			// 创建成功，捕获成功
+			dbReq.onsuccess = function(e){
+				alert("创建数据库成功");
+			}
+			dbReq.onerror = function(e){
+				alert("创建数据库失败"+e);
+			}
+		}
+		
+		// 创建索引
+		function creatTable(){
+			// 升级数据库版本
+			dbReq = indexedDB.open("user",2);
+			// 捕获升级事件，创建对象仓库
+			dbReq.onupgradeneeded = function(){
+				// 获取数据库
+				let db = this.result;
+				// 创建对象仓库
+				let items = {
+					KeyPath:"userId",//主键名称
+					autoIncrement:true
+				}
+				let store = db.createObjectStore("student",items);
+				// 创建索引，在对象仓库的基础上创建
+				store.createIndex("codeIndex","code",{unique:false});//unique:false，可以重复
+				store.createIndex("nameIndex","name",{unique:false});
+				store.createIndex("calsssIndex","calsss",{unique:false});
+				store.createIndex("coureIndex","coure",{unique:false});
+				store.createIndex("brthIndex","brth",{unique:false});
+				store.createIndex("scoreIndex","score",{unique:false});
+				// 关闭数据库
+				db.close();
+			}
+		}
+		// 保存数据
+		function save(){
+			// 打开数据库
+			dbReq = indexedDB.open("user",2);
+			dbReq.onsuccess = function(e){
+				// 获取数据库
+				let db = this.result;
+				// 创建事务
+				let tx = db.transaction("student","readwrite")//(对象事务名称，读写or只读)；多个表["student","teacher"]
+				// 获取对象仓库
+				let store = tx.objectStore("student");
+				// 新增数据
+				store.add({"code":code.value,"name":name.value,"calsss":calsss.value,"coure":coure.value,"brth":brth.value,"score":score.value});
+				
+				// 关闭数据库
+				db.close();
+			}
+		}
+		
+		// 查询
+		function seach(){
+			// 打开数据库
+			dbReq = indexedDB.open("user",2);
+			let html="<tr><td width='200'>学号</td><td width='100'>姓名</td><td width='200'>班级</td><td width='200'>课程</td><td width='200'>生日</td><td width='200'>成绩</td><td width='200'>操作</td></tr>";
+			dbReq.onsuccess = function(e){
+				// 获取数据库
+				let db = this.result;
+				// 创建事务
+				let tx = db.transaction("student","readwrite")
+				//(对象事务名称，读写or只读)；多个表["student","teacher"]
+				// 获取对象仓库
+				let store = tx.objectStore("student");
+				// 新增数据
+				// store.add({"code":code.value,"name":name.value,"calsss":calsss.value,"coure":coure.value,"brth":brth.value,"score":score.value});
+				
+				// 查询数据（使用游标）
+				// 创建一个游标
+				let curReq = store.openCursor();
+				// 成功事件中获取数据
+				curReq.onsuccess = function(){
+					let cur = this.result;
+					
+					if(cur){
+						// 判断cur是否有数据
+						// html += "<tr><td>"+cur.value.code+"</td><td>"+cur.value.name+"</td></tr>";
+						html+="<tr>";
+						for(key in cur.value){
+							if(key!="id")
+								html+="<td>"+cur.value[key]+"</td>"
+						}
+						// 操作
+						html+="<td><a href='javascript:void(0)' onclick='del("+cur.value.id+")'>删除</a>"
+						html+="<a href='javascript:void(0)' onclick='update("+cur.value.id+")'>修改</a></td>"
+						html+="</tr>"
+						// 跳到下一条
+						cur.continue();
+					}
+					mytable.innerHTML = html;
+				}
+				
+				// 关闭数据库
+				db.close();
+			}
+		}
+		// 删除
+		function del(key){
+			// 打开数据库
+			dbReq = indexedDB.open("user",2);
+			dbReq.onsuccess = function(){
+				// 获取数据库
+				let db = this.result;
+				// 创建事务
+				let tx = db.transaction("student","readwrite")
+				//(对象事务名称，读写or只读)；多个表["student","teacher"]
+				// 获取对象仓库
+				let store = tx.objectStore("student");
+				// 删除值
+				// console.log(key)
+				let dele = store.delete(key);
+				// 如果删除成功就返回seach
+				dele.onsuccess = function(){
+					alert("cg")
+				    seach();
+				}
+			}
+			// alert("5555")
+		}
+		function update(key){
+			// 打开数据库
+			dbReq = indexedDB.open("user",2);
+			dbReq.onsuccess = function(){
+				// 获取数据库
+				let db = this.result;
+				// 创建事务
+				let tx = db.transaction("student","readwrite")
+				//(对象事务名称，读写or只读)；多个表["student","teacher"]
+				// 获取对象仓库
+				let store = tx.objectStore("student");
+				
+				let ts = store.get(id);
+				ts.onsuccess = function(){
+				   let student = this.result;
+				//    console.log(student)
+				   document.getElementById("id").value=student.id;
+				   document.getElementById("code").value=student.code;
+				   document.getElementById("name").value=student.name;
+				   document.getElementById("class2").value=student.class2;
+				   document.getElementById("project").value=student.project;
+				   document.getElementById("birth").value=student.birth;
+				   document.getElementById("score").value=student.score;
+				  
+				//    del(id)
+				}
+			}
+				
+		}
+	</script>
+</html>

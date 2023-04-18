@@ -1,0 +1,78 @@
+<!DOCTYPE html>
+<html lang="en">
+	<head>
+		<meta charset="UTF-8">
+		<meta http-equiv="X-UA-Compatible" content="IE=edge">
+		<meta name="viewport" content="width=device-width, initial-scale=1.0">
+		<title>Document</title>
+	</head>
+	<body>
+		<h1>用户信息卡</h1>
+		
+		<form action="">
+			<p>姓名：<input type="text" name="" id="username"></p>
+			<p>email：<input type="email" name="" id="email"></p>
+			<p>电话：<input type="tel" name="" id="tel"></p>
+			<p>说明：<input type="text" name="" id="speak"></p>
+			<button onclick="saveLocal()">保存</button>
+		</form>
+		
+		<hr size="3" color="#ccc">
+		
+		<p>
+		按姓名查询：<input type="text" name="" id="selectName">
+		<button onclick="getLocal()" >查询</button>
+	   </p>
+		<p><span id="detial"></span></p>
+	</body>
+	<script>
+		var username = document.querySelector("#username")
+		var email = document.querySelector("#email")
+		var tel = document.querySelector("#tel")
+		var speak = document.querySelector("#speak")
+		var detial = document.querySelector("#detial")
+		
+		function saveLocal(){
+			if(window.localStorage){
+				var arrList =[]
+				//获取数据
+			   var data = {"username":username.value,"email":email.value,"tel":tel.value,"speak":speak.value}
+				//存入数组
+				arrList.push(data)
+				//将数据转为json
+				var arrList2 = JSON.stringify(arrList);
+				//存储
+				localStorage.setItem("data",arrList2)
+			} 
+			else{
+				alert("您的浏览器不支持localStorage")
+			}
+		}
+	 
+		function getLocal(){
+			if(window.localStorage){
+				//获取查询的数据
+				var selectName = document.querySelector("#selectName").value
+				//获取存储的值
+				var save = localStorage.getItem("data")
+				var join = []
+				//解析json格式
+				join = JSON.parse(save)
+				//遍历所有对象
+				join.forEach(e => {
+					if(e.username==selectName){
+						detial.innerHTML += "姓名:"+e.username+"<br>"
+											+"EMAIL:"+e.email+"<br>"
+											+"电话号码:"+e.tel+"<br>"
+											+"说明:"+e.speak;
+					}
+				});
+	 
+			} 
+			else{
+				alert("您的浏览器不支持localStorage")
+			}
+		}
+	 
+	</script>
+</html>

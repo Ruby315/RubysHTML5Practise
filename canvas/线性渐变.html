@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<!-- 创建画布 -->
+		<!-- 调整宽搞画布 -->
+		<canvas id="myCanvas" width="600px" height="400px" style="border: 1px solid black;"></canvas>
+	</body>
+	<script type="text/javascript">
+		// 创建画笔
+		let cav = document.querySelector("#myCanvas");// 获取画布
+		let cxt = cav.getContext("2d");
+		// 设置渐变区域
+		let g = cxt.createLinearGradient(0,0,400,200)
+		// 设置颜色变换
+		g.addColorStop(0,"pink")
+		g.addColorStop(0.6,"blue")
+		g.addColorStop(1,"red")
+		// 应用渐变样式
+		cxt.strokeStyle = g
+		cxt.fillStyle = g
+		cxt.lineWidth = 10
+		// 绘制线条
+		cxt.moveTo(0,20);
+		cxt.lineTo(200,300);
+		cxt.stroke();
+		cxt.fillRect(20,120,170,100)
+		 
+		 cxt.beginPath()
+		 cxt.arc(260,300,50,Math.PI/180*0,Math.PI/180*360,false)
+		 cxt.stroke()
+		
+				
+				
+				
+				
+			</script>
+		</html>
+		

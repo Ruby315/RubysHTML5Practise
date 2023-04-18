@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<!-- 创建画布 -->
+		<!-- 调整宽搞画布 -->
+		<canvas id="myCanvas" width="600px" height="400px" style="border: 1px solid black;"></canvas>
+	</body>
+	<script type="text/javascript">
+		// 创建画笔
+		let cav = document.querySelector("#myCanvas");// 获取画布
+		let cxt = cav.getContext("2d");
+		// 创建一个图像资源
+		let img = new Image()
+		img.src = "img/camera.jpg"
+		// 图像渲染完毕后绘制
+		img.onload = function(){
+			// 绘制图形到canvas画布中
+			//cxt.drawImage(img,0,0)
+			// cxt.drawImage(img,0,0,200,100)//图片缩放
+			//图像裁切
+			//1.制定裁切路径
+			cxt.arc(100,100,80,Math.PI/180*0,Math.PI/180*360,false)
+			cxt.clip()
+			cxt.drawImage(img,0,0,300,480,0,0,200,150)
+			
+		}
+		
+		
+				
+				
+			</script>
+		</html>
+		

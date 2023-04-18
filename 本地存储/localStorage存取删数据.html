@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<form action="">
+			<p>姓名:<input type="text" id="username"/></p>
+			<p>邮箱:<input type="email" id="email"/></p>
+			<p>年龄:<input type="number" id="age"/></p>
+			<input type="button" value="local存数据" onclick="localSave()">
+			<input type="button" value="local取数据" onclick="localLoad()">
+			<input type="button" value="local删数据" onclick="localDelte()">
+		</form>
+		<span id="details"></span>
+	</body>
+	<script>
+		let username = document.querySelector("#username")
+		let email = document.querySelector("#email")
+		let age = document.querySelector("#age")
+		let details = document.querySelector("#details")
+		// localStorage存数据
+		// localStorage数据不删永远保存
+		function localSave(){
+			// 判断浏览器是否支持localStora
+			if(window.localStorage){
+				// key value方式
+				localStorage.setItem("username",username.value);
+				// 数组方式
+				localStorage["email"] = email.value;
+				// .ID 方式
+				localStorage.age = age.value;
+			}
+			else{
+				alert("您的浏览器不支持localStorage")
+			}
+		}
+		// 取数据
+		function localLoad(){
+			// 判断浏览器是否支持localStora
+			if(window.localStorage){
+				// 方法一
+				details.innerHTML ="姓名:" + localStorage.getItem("username") + "<br>"
+									+"邮箱:" + localStorage.getItem("email") + "<br>"
+									+"年龄:" + localStorage.age ;
+				// 方法二
+				// details.innerHTML = ""
+				// for(let i = 0;i<localStorage.length;i++){
+				// 	details.innerHTML += localStorage.key(i) + ":" + localStorage.getItem(localStorage.key(i))+"<br>"
+				// }
+			}
+			else{
+				alert("您的浏览器不支持localStorage")
+			}
+		}
+		// 取数据
+		function localDelte(){
+			// 判断浏览器是否支持localStora
+			if(window.localStorage){
+				// 删除单个数据
+				// localStorage.removeItem("age");
+				// 清空所有数据
+				localStorage.clear()
+			}
+			else{
+				alert("您的浏览器不支持localStorage")
+			}
+		}
+	</script>
+</html>

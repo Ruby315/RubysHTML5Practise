@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8" />
+		<title></title>
+	</head>
+	<body>
+		<!-- 创建画布 -->
+		<!-- 调整宽搞画布 -->
+		<canvas id="myCanvas" width="600px" height="400px" style="border: 1px solid black;"></canvas>
+	</body>
+	<script type="text/javascript">
+		// 创建画笔
+		let cav = document.querySelector("#myCanvas");// 获取画布
+		let cxt = cav.getContext("2d");
+		
+		// // 绘制线条
+		// cxt.moveTo(30,60);
+		// cxt.lineTo(200,300);
+		// //cxt.moveTo(80,90);// 画两条线，若想两线连接不用moveto
+		// cxt.lineTo(360,120);
+		// // cxt.lineTo(30,60);//与第一个重复了
+		// cxt.closePath();//封闭图形
+		// cxt.fillStyle = "aqua"//填充颜色,要放在fill()前
+		// cxt.fill();//填充
+		// cxt.strokeStyle = "#aa2345";//改变线条颜色
+		// cxt.lineWidth = 5;//改变线条宽度
+		// cxt.lineCap = "round"//线条收尾样式，默认平直butt，square正方形线帽
+		// cxt.lineJoin = "round"//线条相交样式，默认斜角miter，round尖角，bevel圆角
+		// cxt.setLineDash([20,15])//虚线，20长度，15间隔
+		// cxt.stroke();//绘制线条
+		
+		// // 重新创建图形,跟上次样式，起点重新设置
+		// cxt.beginPath()
+		// cxt.moveTo(160,50);
+		// cxt.lineTo(250,390);
+		// cxt.setLineDash([20,15])
+		// cxt.stroke();
+		
+		// // cxt.rect(x,y,weidth,height)//填充矩形
+		// // cxt.strokeRect(x,y,weidth,height)//绘制矩形边框
+		// // cxt.clearRect(x,y,weidth,height)//清除矩形区域
+		
+		// // 填充矩形
+		// cxt.rect(50,90,150,100)
+		// cxt.stroke();
+		// cxt.fill();//填充
+		
+		// // 填充矩形
+		// cxt.strokeRect(320,250,150,100);//线框
+		// cxt.fillRect(320,250,150,100);
+		// // 清除矩形
+		// cxt.clearRect(300,150,100);
+		
+		
+		// 画圆
+		// cxt.arc(圆心x,圆心y,半径,Math.PI/180*起始度数,Math.PI/180*结束度数,顺/ 逆时针)
+		
+		// cxt.arc(200,200,50,Math.PI/180*0,Math.PI/180*90)//默认顺时针方向
+		cxt.arc(200,200,50,Math.PI/180*0,Math.PI/180*90,false)//逆时针
+		// cxt.arc(200,200,50,Math.PI/180*0,Math.PI/180*90,true)//顺时针
+		cxt.stroke()
+		
+		// 画扇形
+		cxt.moveTo(200,200)//从圆心开始封闭
+		cxt.arc(200,200,50,Math.PI/180*0,Math.PI/180*90,false)//逆时针
+		// cxt.arc(200,200,50,Math.PI/180*0,Math.PI/180*90,true)//顺时针
+		cxt.closePath()
+		cxt.stroke()
+		
+		
+		// 旋转
+		
+		
+		
+	</script>
+</html>

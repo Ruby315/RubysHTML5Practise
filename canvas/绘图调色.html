@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>绘制画板</title>
+	</head>
+	<body>
+		<div class="">
+			<input type="color" value="#ff5821" id="color"/>
+			<input type="range" class="range" min="1" max="20" value="1" id="cu">
+			<button type="button" id="cls">清除图像</button>
+			<button type="button" id="rectangle">绘制矩形</button>
+			<button type="button" id="round">绘制圆</button>
+		</div>
+		<canvas id="canvas" width="900" height=500" style="border: 2px #550000 solid;">
+			
+		</canvas>
+		<script type="text/javascript">
+			// 颜色
+			let color = document.querySelector("#color");
+			// 清除
+			let cls = document.querySelector("#cls");
+			// 获取画布
+			let canvas = document.querySelector("#canvas");
+			// 粗细
+			let cu = document.querySelector("#cu");
+			// 获取画笔
+			let cxt = canvas.getContext('2d');
+			// 矩形
+			let rectangle = document.querySelector("#rectangle");
+			// 圆形
+			let round = document.querySelector("#round");
+			
+			let offstL = canvas.offsetLeft;
+			let offstT = canvas.offsetTop;
+			
+			canvas.onmousedown=function(e){
+				cxt.moveTo(e.clientX-offstL,e.clientY-offstT);
+				// 开始本次绘画
+				cxt.beginPath();
+				// 线条颜色
+				cxt.strokeStyle = color.value;
+				// 线条粗细
+				cxt.lineWidth= cu.value;
+				// console.log(e.x,e.y);
+				canvas.onmousemove = function(e){
+					cxt.lineTo(e.clientX-offstL,e.clientY-offstT);
+					cxt.stroke();
+				}
+				
+			};
+			// 同步监听
+			canvas.onmouseup = function(e){
+				// 结束本次绘画
+				cxt.closePath();
+				canvas.onmousemove = null;
+				// console.log(e.x,e.y);
+			};
+			// 绘制矩形
+			rectangle.onclick = function(){
+				cxt.beginPath();
+				cxt.fillStyle=color.value;
+				
+				cxt.fillRect(100,150,100,300)
+				cxt.fill();
+				cxt.closePath()
+				cxt.stroke();
+			};
+			// 绘制圆形
+			round.onclick = function(){
+				cxt.beginPath();
+				cxt.fillStyle=color.value;
+				cxt.arc(500,200,150,0,Math.PI/180*360,true);
+				// 线条颜色
+				cxt.closePath();
+				cxt.fill();
+				// cxt.stroke();
+			}
+			
+			// 清除画布内容
+			cls.onclick = function(){
+				cxt.clearRect(0,0,canvas.width, canvas.height);
+				console.log("画板内容被清除")
+			}
+			
+		</script>
+	</body>
+</html>
+

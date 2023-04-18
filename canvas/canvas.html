@@ -1,0 +1,70 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="utf-8">
+		<title>绘制画板</title>
+	</head>
+	<!-- 209010318李洋 -->
+	<body>
+		<div class="">
+			<input type="color" value="#000" id="color"/>
+			<input type="range" class="range" min="1" max="20" value="1" id="cu">
+			<button type="button" id="cls">清除图像</button>
+			<button type="button" id="erser">橡皮擦</button>
+		</div>
+		<canvas id="canvas" width="900" height=500" style="border: 2px black solid;">
+			
+		</canvas>
+		<script type="text/javascript">
+			// 颜色
+			let color = document.querySelector("#color");
+			// 清除
+			let cls = document.querySelector("#cls");
+			// 获取画布
+			let canvas = document.querySelector("#canvas");
+			// 粗细
+			let cu = document.querySelector("#cu");
+			// 橡皮
+			let er = document.querySelector("#erser");
+			// 获取画笔
+			let canv = document.querySelector("#canvas");
+			let cxt = canv.getContext('2d');
+			
+			
+			canv.onmousedown=function(e){
+				let x1 = e.clientX-canv.offsetLeft;
+				let y1 = e.clientY-canv.offsetTop;
+				cxt.moveTo(x1,y1);
+				// 开始本次绘画
+				cxt.beginPath();
+				// 线条颜色
+				cxt.strokeStyle = color.value;
+				// 线条粗细
+				cxt.lineWidth= cu.value;
+				canv.onmousemove = function(e){
+					let x2 = e.clientX-canv.offsetLeft;
+					let y2 = e.clientY-canv.offsetTop;
+					cxt.lineTo(x2,y2);
+					cxt.stroke();
+				}
+				
+			};
+			
+			// 同步监听
+			canv.onmouseup = function(e){
+				// 结束本次绘画
+				cxt.closePath();
+				canv.onmousemove = null;
+				// console.log(e.x,e.y);
+			};
+			
+			// 清除画布内容
+			cls.onclick = function(){
+				cxt.clearRect(0,0,canv.width, canv.height);
+				console.log("画板内容被清除")
+			}
+			
+		</script>
+	</body>
+</html>
+

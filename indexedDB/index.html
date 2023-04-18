@@ -1,0 +1,223 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta http-equiv="X-UA-Compatible" content="IE=edge">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>indexDB</title>
+</head>
+<body>
+    <h1>index DataBase</h1>
+    <p><input type="button" name="" id="" value="创建数据库" onclick="creatDB()">
+       <input type="button" name="" id="" value="创建对象仓库" onclick="creatObjectStore()">
+    </p>
+    <hr>
+    <fieldset>
+        <legend>用户信息</legend>
+        <input type="hidden" name="" id="id">
+        <p>学号：<input type="text" name="" id="code"></p>
+        <p>姓名：<input type="text" name="" id="name"></p>
+        <p>班级：<input type="text" name="" id="class2"></p>
+        <p>课程：<input type="text" name="" id="project"></p>
+        <p>生日：<input type="text" name="" id="birth"></p>
+        <p>成绩：<input type="text" name="" id="score"></p>
+        
+        <p><input type="button" value="保存" onclick="saveDB()"></p>
+        <p><input type="button" value="查询数据" onclick="seachDB()"></p>
+    </fieldset>
+    <br>
+    <table border="1" id="detail" class="datatable">
+       
+    </table>
+    <!-- <p><span id="detail"></span></p> -->
+</body>
+<script>
+    let dbReq;
+    let db;
+    //1.创建数据库
+    function creatDB(){
+        //第一个是数据库名称，第二个是版本号（必须为整数）
+       dbReq = indexedDB.open("sdb",1)
+       dbReq.onsuccess = function(){
+           alert("数据库创建成功")
+       }
+       dbReq.onerror = function(){
+           alert("数据库创建失败")
+       }
+    }
+ 
+    //2.创建对象仓库
+    function creatObjectStore(){
+        //更新版本
+        dbReq = indexedDB.open("sdb",2);
+        //获取版本更新事件
+        dbReq.onupgradeneeded = function(){
+            //获取数据库实例
+            db=this.result
+         
+            //第一个是仓库名称，第二个是keyPath键和是否自增长,autoIncrement默认false
+            let store = db.createObjectStore("student",{keyPath:"id",autoIncrement:true})
+ 
+            //创建索引,第一个索引名，第二个字段名，第三个是表示是否重复
+            //store.createIndex("idIndex","id",{unique:false})
+            store.createIndex("codeIndex","code",{unique:false})
+            store.createIndex("nameIndex","name",{unique:false})
+            store.createIndex("class2Index","class2",{unique:false})
+            store.createIndex("projectIndex","project",{unique:false})
+            store.createIndex("birthIndex","birth",{unique:false})
+            store.createIndex("scoreIndex","score",{unique:false})
+            //关闭数据库
+            db.close();
+        }
+    }
+ 
+    //保存数据
+    let id = document.querySelector("#id")
+    let code = document.querySelector("#code")
+    let name = document.querySelector("#name")
+    let class2 = document.querySelector("#class2")
+    let project = document.querySelector("#project")
+    let birth = document.querySelector("#birth")
+    let score = document.querySelector("#score")
+    let detail = document.querySelector("#detail")
+   
+    function saveDB(){
+        //1.打开数据库
+        dbReq = indexedDB.open("sdb");
+ 
+        dbReq.onsuccess = function(){
+            //2.成功事件中获取到数据库
+            db=this.result;
+            //3.创建事务(第一个参数，操作对象仓库的名称。第二个参数，操作权限)
+            let tx =db.transaction("student","readwrite");
+            //4.操作对象仓库中的数据
+            let store = tx.objectStore("student");
+            //5.组装数据
+             let data = {
+                "code":code.value,
+                "name":name.value,
+                "class2":class2.value,
+                "project":project.value,
+                "birth":birth.value,
+                "score":score.value
+            }
+           
+            console.log(id.value)
+            if(id.value!=""){
+                    data = {
+                "id":parseInt(id.value),
+                "code":code.value,
+                "name":name.value,
+                "class2":class2.value,
+                "project":project.value,
+                "birth":birth.value,
+                "score":score.value
+            }
+                    console.log(data)
+                    var i = store.put(data)
+                    i.onsuccess=function(){
+                        console.log(111)
+                    }
+                    i.onerror=function(e){
+                        console.log(e)
+                    }
+                    
+            }
+           else{
+                store.add(data);
+           }
+           
+            
+            //6.关闭数据库
+            db.close();
+            seachDB();
+        }
+    }
+ 
+    //查询数据
+    function seachDB(){
+        let tr ="<tr><td>学号</td><td>姓名</td><td>班级</td><td>课程</td><td>生日</td><td>成绩</td><td>操作</td></tr>"
+ 
+         //1.打开数据库
+         dbReq = indexedDB.open("sdb");
+ 
+            dbReq.onsuccess = function(){
+                //2.成功事件中获取到数据库
+                db=this.result;
+                //3.创建事务(第一个参数，操作对象仓库的名称。第二个参数，操作权限)
+                let tx =db.transaction("student","readwrite");
+                //4.操作对象仓库中的数据
+                let store = tx.objectStore("student");
+                //5.获取数据
+ 
+                //获取多个数据，创建游标
+                let curReq = store.openCursor();
+                curReq.onsuccess=function(){
+                    let curValue = this.result;
+                    if(curValue){
+                        tr += "<tr><td>"+curValue.value.code +
+                                            "</td><td>"+ curValue.value.name+
+                                            "</td><td>"+curValue.value.class2+
+                                            "</td><td> "+curValue.value.project+
+                                            "</td><td>  "+curValue.value.birth+
+                                            "</td><td>  "+curValue.value.score+
+                                            "</td><td>"+"<a href='javascript:del(" + curValue.value.id + ")'>删除</a>"+
+                                            " "+"<a href='javascript:updata(" + curValue.value.id + ")'>修改</a></td><tr>";
+                        curValue.continue();
+                    }
+                    detail.innerHTML=tr;
+                }
+                //6.关闭数据库
+                db.close();
+            }
+    }
+    
+    //删除
+    function del(key){
+        //1.打开数据库
+        dbReq = indexedDB.open("sdb");
+            dbReq.onsuccess = function() {
+                // 2.成功事件中获取数据库实sdb
+                db = this.result;
+                //3.创建事务
+                let tx =db.transaction("student","readwrite");
+                // 4.操作对象仓库中的数据
+                let store = tx.objectStore("student");
+                let dele = store.delete(key);
+                dele.onsuccess = function(){
+                    seachDB()
+                }
+            }
+    }
+ 
+    //修改
+    function updata(id){
+        //1.打开数据库
+        dbReq = indexedDB.open("sdb");
+            dbReq.onsuccess = function() {
+                // 2.成功事件中获取数据库实sdb
+                db = this.result;
+                //3.创建事务
+                let tx =db.transaction("student","readwrite");
+                // 4.操作对象仓库中的数据
+                let store = tx.objectStore("student");
+                let ts = store.get(id);
+                ts.onsuccess = function(){
+                   let student = this.result;
+                //    console.log(student)
+                   document.getElementById("id").value=student.id;
+                   document.getElementById("code").value=student.code;
+                   document.getElementById("name").value=student.name;
+                   document.getElementById("class2").value=student.class2;
+                   document.getElementById("project").value=student.project;
+                   document.getElementById("birth").value=student.birth;
+                   document.getElementById("score").value=student.score;
+                  
+                //    del(id)
+                }
+                 
+            }
+    }
+ 
+</script>
+</html>
